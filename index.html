@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Gym</title>
+<!-- Home Screen app: full screen, dark status bar, our icon and name -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym">
+<meta name="theme-color" content="#070a08">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  html, body { margin: 0; height: 100%; background: #070a08; overflow: hidden; overscroll-behavior: none; }
+  /* the app sits between the clock and the home bar; the strips around it stay the app's dark colour */
+  #app { position: fixed; left: 0; top: env(safe-area-inset-top); width: 100%;
+         height: calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+         border: 0; display: block; background: #070a08; opacity: 0; transition: opacity .3s; }
+  #app.on { opacity: 1; }
+  #msg { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; color: #91a69a;
+         font: 15px/1.5 system-ui, sans-serif; text-align: center; }
+  .spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #1d2a23; border-top-color: #43f2a0; animation: s .8s linear infinite; }
+  @keyframes s { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="msg"><div class="spin"></div></div>
+<iframe id="app" title="Gym diary"></iframe>
+<script>
+  // ▼ Paste your web app link between the quotes (Apps Script → Deploy → Manage deployments → Web app URL, ends in /exec)
+  const APP_URL = 'PASTE_YOUR_EXEC_LINK_HERE';
+
+  const app = document.getElementById('app'), msg = document.getElementById('msg');
+  if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(APP_URL)) {
+    msg.textContent = 'Paste your Apps Script /exec link into index.html (the APP_URL line).';
+  } else {
+    app.onload = () => setTimeout(() => { app.classList.add('on'); msg.style.display = 'none'; }, 350);
+    app.src = APP_URL;
+  }
+</script>
+</body>
+</html>
