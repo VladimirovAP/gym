@@ -14,15 +14,17 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
-  html, body { margin: 0; height: 100%; background: #070a08; overflow: hidden; overscroll-behavior: none; }
-  /* the app sits between the clock and the home bar; the strips around it stay the app's dark colour */
-  #app { position: fixed; left: 0; top: env(safe-area-inset-top); width: 100%;
-         height: calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  html, body { margin: 0; background: #070a08; overscroll-behavior: none; }
+  /* the app fills the whole screen and keeps clear of the clock and the home bar by itself.
+     Not "position: fixed": in iPhone Home Screen apps that gets cut off at the bottom. */
+  html { height: 100vh; overflow: hidden; }
+  body { height: 100%; overflow: hidden; position: relative; }
+  #app { position: absolute; left: 0; top: 0; width: 100%; height: 100%;
          border: 0; display: block; background: #070a08; opacity: 0; transition: opacity .3s; }
   #app.on { opacity: 1; }
-  #msg { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; color: #91a69a;
+  #msg { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; color: #91a69a;
          font: 15px/1.5 system-ui, sans-serif; text-align: center; }
-  .spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #1d2a23; border-top-color: #43f2a0; animation: s .8s linear infinite; }
+  .spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #1d2a23; border-top-color: #08e280; animation: s .8s linear infinite; }
   @keyframes s { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -34,6 +36,8 @@
   const APP_URL = 'https://script.google.com/macros/s/AKfycbzlpPxWGbhcor9EL_q-4M5pMbaze4BMUYm9g_Bi8xyAtqGm3BTsbTZYMCYYygIA-9-4BA/exec';
 
   const app = document.getElementById('app'), msg = document.getElementById('msg');
+  // opened in a normal Safari tab (not from the Home Screen): fit between Safari's bars instead
+  if (!(navigator.standalone || matchMedia('(display-mode: standalone)').matches)) document.documentElement.style.height = '100dvh';
   if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(APP_URL)) {
     msg.textContent = 'Paste your Apps Script /exec link into index.html (the APP_URL line).';
   } else {
